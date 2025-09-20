@@ -1,1 +1,173 @@
+:root {
+    --background: #1a1a1a;
+    --foreground: #00ff41;
+    --border-color: #00ff41;
+    --shadow-color: rgba(0, 255, 65, 0.5);
+    --red-btn: #ff5f56;
+    --yellow-btn: #ffbd2e;
+    --green-btn: #27c93f;
+}
 
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.terminal {
+    width: 100%;
+    max-width: 800px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px var(--shadow-color);
+    overflow: hidden;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.terminal-header {
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-buttons {
+    display: flex;
+}
+
+.button {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.button.red { background-color: var(--red-btn); }
+.button.yellow { background-color: var(--yellow-btn); }
+.button.green { background-color: var(--green-btn); }
+
+.header-title {
+    flex-grow: 1;
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.terminal-body {
+    padding: 20px;
+    height: 500px;
+    overflow-y: auto;
+}
+
+.line {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.prompt {
+    color: #ffbd2e; /* Yellow prompt */
+    margin-right: 10px;
+    animation: glitch 1.5s linear infinite;
+}
+
+.type-effect {
+    white-space: pre-wrap;
+    border-right: 2px solid var(--foreground);
+    animation: blink 0.75s step-end infinite;
+    display: inline-block;
+}
+
+.output {
+    display: block; /* Change from flex to block for output sections */
+    flex-direction: column;
+    padding-left: 20px;
+    border-left: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+.output-title {
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--shadow-color);
+    margin-bottom: 10px;
+    animation: glitch-light 2s linear infinite;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+a {
+    color: var(--foreground);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    background-color: var(--foreground);
+    color: var(--background);
+    text-shadow: none;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+pre {
+    font-family: 'Roboto Mono', monospace;
+    text-shadow: 0 0 5px var(--shadow-color);
+}
+
+.cursor {
+    animation: blink 0.75s step-end infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--foreground); }
+}
+
+@keyframes glitch {
+  2%,64%{ transform: translate(2px,0) skew(0deg); }
+  4%,60%{ transform: translate(-2px,0) skew(0deg); }
+  62%{ transform: translate(0,0) skew(5deg); }
+}
+
+@keyframes glitch-light {
+  2%,64%{ opacity: 0.8; }
+  4%,60%{ opacity: 1; }
+  62%{ opacity: 0.9; }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #222;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--foreground);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff77;
+}
