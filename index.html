@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaiGame Terminal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="terminal">
+        <header class="terminal-header">
+            <div class="header-buttons">
+                <span class="button red"></span>
+                <span class="button yellow"></span>
+                <span class="button green"></span>
+            </div>
+            <div class="header-title">
+                [visitor@gaigame.io] — /home/visitor
+            </div>
+        </header>
 
+        <main class="terminal-body">
+            <div class="line">
+                <span class="prompt">></span>
+                <p class="type-effect" id="typewriter"></p>
+            </div>
+
+            <div class="line output" id="content" style="display: none;">
+                <pre>
+    _  _   __  ____  __     __     __
+   / )( \ /  \(_  _)/  \   /  \   /  \
+  (  )(  (  O ) )( (  O ) (  O ) (  O )
+   \____/ \__/ (__) \__/   \__/   \__/
+                </pre>
+                <p class="output-title">[欢迎来到我的数字领域]</p>
+            </div>
+
+            <div class="line output" id="about" style="display: none;">
+                <p class="output-title">[./关于我.sh]</p>
+                <p>你好，我是 [你的名字]。</p>
+                <p>一个穿梭在0和1之间的数字幽灵，热衷于 [你的技术栈，例如：前端开发、人工智能、数据科学]。</p>
+                <p>致力于用代码构建未来的赛博空间。</p>
+            </div>
+
+            <div class="line output" id="projects" style="display: none;">
+                <p class="output-title">[ls -l ./项目]</p>
+                <ul>
+                    <li><a href="你的项目链接1" target="_blank">[项目一] - 一个革命性的 [项目简介]。</a></li>
+                    <li><a href="你的项目链接2" target="_blank">[项目二] - 探索 [项目简介] 的无限可能。</a></li>
+                    <li><a href="你的项目链接3" target="_blank">[项目三] - [项目简介]。</a></li>
+                </ul>
+            </div>
+
+            <div class="line output" id="contact" style="display: none;">
+                <p class="output-title">[cat ./联系方式.txt]</p>
+                <p>Email: <a href="mailto:你的邮箱">你的邮箱</a></p>
+                <p>GitHub: <a href="https://github.com/你的用户名" target="_blank">你的用户名</a></p>
+                <p>LinkedIn: <a href="你的LinkedIn链接" target="_blank">你的LinkedIn用户名</a></p>
+            </div>
+             <div class="line output" id="final" style="display: none;">
+                <span class="prompt">></span> <span class="cursor">_</span>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
