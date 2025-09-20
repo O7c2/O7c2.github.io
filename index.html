@@ -4,15 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub 扫雷主页</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .game-container, .homepage {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .game-container {
+      display: block;
+    }
+
+    .homepage {
+      display: none;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      background: #c0c0c0;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    p {
+      font-size: 16px;
+      color: #555;
+      margin: 5px 0;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
   <div class="game-container" id="game-container">
     <h1>扫雷 - 进入我的 GitHub 主页</h1>
-    <div class="game-info">
-      <span id="mine-count">剩余雷数: 10</span>
-      <span id="timer">时间: 0</span>
-    </div>
+    <p>完成游戏以解锁主页！</p>
     <canvas id="minesweeper" width="300" height="300"></canvas>
     <button onclick="resetGame()">重置游戏</button>
   </div>
@@ -21,13 +89,131 @@
     <h1>YourGitHubUsername</h1>
     <p>欢迎来到我的 GitHub 主页！</p>
     <p>以下是我的项目链接：</p>
-    <ul>
-      <li><a href="https://github.com/YourGitHubUsername/project1">项目 1 - 前端开发</a></li>
-      <li><a href="https://github.com/YourGitHubUsername/project2">项目 2 - 游戏设计</a></li>
-      <li><a href="https://github.com/YourGitHubUsername">访问我的 GitHub 主页</a></li>
-    </ul>
+    <p><a href="https://github.com/YourGitHubUsername/project1">项目 1 - 前端开发</a></p>
+    <p><a href="https://github.com/YourGitHubUsername/project2">项目 2 - 游戏设计</a></p>
+    <p><a href="https://github.com/YourGitHubUsername">访问我的 GitHub 主页</a></p>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const canvas = document.getElementById('minesweeper');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 10;
+    const cellSize = 30;
+    const mineCount = 10;
+    let grid = [];
+    let revealed = [];
+    let mines = [];
+    let gameWon = false;
+
+    function initGame() {
+      grid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
+      revealed = Array(gridSize).fill().map(() => Array(gridSize).fill(false));
+      mines = [];
+      gameWon = false;
+
+      // Place mines
+      let placed = 0;
+      while (placed < mineCount) {
+        const x = Math.floor(Math.random() * gridSize);
+        const y = Math.floor(Math.random() * gridSize);
+        if (!mines.some(m => m.x === x && m.y === y)) {
+          mines.push({ x, y });
+          grid[x][y] = -1;
+          placed++;
+        }
+      }
+
+      // Calculate numbers
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          if (grid[i][j] === -1) continue;
+          let count = 0;
+          for (let di = -1; di <= 1; di++) {
+            for (let dj = -1; dj <= 1; dj++) {
+              const ni = i + di;
+              const nj = j + dj;
+              if (ni >= 0 && ni < gridSize && nj >= 0 && nj < gridSize && grid[ni][nj] === -1) {
+                count++;
+              }
+            }
+          }
+          grid[i][j] = count;
+        }
+      }
+      drawBoard();
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          ctx.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize);
+          if (revealed[i][j]) {
+            if (grid[i][j] === -1) {
+              ctx.fillStyle = 'red';
+              ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+            } else {
+              ctx.fillStyle = '#e0e0e0';
+              ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+              if (grid[i][j] > 0) {
+                ctx.fillStyle = 'black';
+                ctx.font = '20px Arial';
+                ctx.fillText(grid[i][j], i * cellSize + 10, j * cellSize + 20);
+              }
+            }
+          } else {
+            ctx.fillStyle = '#c0c0c0';
+            ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+    }
+
+    function revealCell(x, y) {
+      if (x < 0 || x >= gridSize || y < 0 || y >= gridSize || revealed[x][y] || gameWon) return;
+      revealed[x][y] = true;
+      if (grid[x][y] === -1) {
+        alert('游戏结束！你踩到雷了！');
+        initGame();
+        return;
+      }
+      if (grid[x][y] === 0) {
+        for (let di = -1; di <= 1; di++) {
+          for (let dj = -1; dj <= 1; dj++) {
+            revealCell(x + di, y + dj);
+          }
+        }
+      }
+      drawBoard();
+      checkWin();
+    }
+
+    function checkWin() {
+      let revealedCount = 0;
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          if (revealed[i][j]) revealedCount++;
+        }
+      }
+      if (revealedCount === gridSize * gridSize - mineCount) {
+        gameWon = true;
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('homepage').style.display = 'block';
+      }
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) / cellSize);
+      const y = Math.floor((e.clientY - rect.top) / cellSize);
+      revealCell(x, y);
+    });
+
+    function resetGame() {
+      initGame();
+    }
+
+    initGame();
+  </script>
 </body>
 </html>
