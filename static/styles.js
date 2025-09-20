@@ -147,7 +147,7 @@ function checkWin() {
     gameWon = true;
     clearInterval(timerInterval);
     alert(`恭喜！你赢了！用时 ${timer} 秒`);
-    window.location.href = '/profile';
+    window.location.href = 'profile.html';
   }
 }
 
