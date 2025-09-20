@@ -10,8 +10,8 @@ def index():
 def profile():
     user_data = {
         'username': 'O7c2',
-        'avatar_url': 'https://avatars.githubusercontent.com/u/192097429?u=cdad0c96b8462ad5a1f0e546992c75b753b6c389&v=4',  # 替换为实际 GitHub 用户 ID
-        'bio': '热爱编程，专注于数学应用与前端开发，欢迎探索我的项目！',
+        'avatar_url': 'https://avatars.githubusercontent.com/u/192097429?u=cdad0c96b8462ad5a1f0e546992c75b753b6c389&v=4',
+        'bio': '欢迎探索我的项目！',
         'projects': [
             {'name': '使用 SVD 实现简单图像处理（数学应用）', 'url': 'https://github.com/O7c2/svd-image'},
             {'name': '访问我的 GitHub 主页', 'url': 'https://github.com/O7c2'}
