@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎来到我的世界</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub 扫雷主页</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas id="sakura"></canvas>
-
-    <div class="vn-window">
-        <img src="assets/images/avatar.png" alt="character" class="character-sprite">
-
-        <div class="ui-container">
-            <div class="choices">
-                <div class="choice-button" data-target="about">关于我</div>
-                <div class="choice-button" data-target="projects">我的项目</div>
-                <div class="choice-button" data-target="contact">联系方式</div>
-            </div>
-
-            <div class="text-box">
-                <div class="name-tag">[O7c2]</div>
-                <div class="dialogue" id="dialogue-text">
-                    </div>
-            </div>
-        </div>
+  <div class="game-container" id="game-container">
+    <h1>扫雷 - 进入我的 GitHub 主页</h1>
+    <div class="game-info">
+      <span id="mine-count">剩余雷数: 10</span>
+      <span id="timer">时间: 0</span>
     </div>
-    
-    <script src="js/script.js"></script>
+    <canvas id="minesweeper" width="300" height="300"></canvas>
+    <button onclick="resetGame()">重置游戏</button>
+  </div>
+
+  <div class="homepage" id="homepage">
+    <h1>YourGitHubUsername</h1>
+    <p>欢迎来到我的 GitHub 主页！</p>
+    <p>以下是我的项目链接：</p>
+    <ul>
+      <li><a href="https://github.com/YourGitHubUsername/project1">项目 1 - 前端开发</a></li>
+      <li><a href="https://github.com/YourGitHubUsername/project2">项目 2 - 游戏设计</a></li>
+      <li><a href="https://github.com/YourGitHubUsername">访问我的 GitHub 主页</a></li>
+    </ul>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
