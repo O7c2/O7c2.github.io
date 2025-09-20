@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub O7c2 主页</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="game-container" id="game-container">
+    <h1>扫雷 - 解锁 O7c2 的 GitHub 主页</h1>
+    <div class="game-info">
+      <span id="mine-count">剩余雷数: 10</span>
+      <span id="timer">时间: 0</span>
+    </div>
+    <canvas id="minesweeper" width="300" height="300"></canvas>
+    <p>左键翻开格子，右键标记雷</p>
+    <button onclick="resetGame()">重置游戏</button>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
