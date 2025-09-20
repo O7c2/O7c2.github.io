@@ -3,8 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub O7c2 主页</title>
-  <link rel="stylesheet" href="static/styles.css">
+  <title>GitHub O7c2 主页 - 扫雷</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #6dd5fa, #2980b9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .game-container, .homepage {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+      max-width: 500px;
+      width: 90%;
+      margin: 20px auto;
+      transition: opacity 0.5s ease-in-out, transform 0.3s ease;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .homepage {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      border: 3px solid #2c3e50;
+      background: #d3d3d3;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 4px solid #007bff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 10px 0;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    p {
+      font-size: 16px;
+      color: #34495e;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+    }
+
+    li {
+      margin: 12px 0;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 14px;
+      color: #34495e;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="game-container" id="game-container">
@@ -18,6 +132,194 @@
     <button onclick="resetGame()">重置游戏</button>
   </div>
 
-  <script src="static/script.js"></script>
+  <div class="homepage" id="homepage">
+    <img src="https://avatars.githubusercontent.com/u/192097429?u=cdad0c96b8462ad5a1f0e546992c75b753b6c389&v=4" alt="O7c2 Avatar" class="avatar">
+    <h1>O7c2</h1>
+    <p>欢迎探索我的项目！</p>
+    <p>以下是我的项目链接：</p>
+    <ul>
+      <li><a href="https://github.com/O7c2/svd-image" target="_blank">使用 SVD 实现简单图像处理（数学应用）</a></li>
+      <li><a href="https://github.com/O7c2" target="_blank">访问我的 GitHub 主页</a></li>
+    </ul>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('minesweeper');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+    const gridSize = 10;
+    const cellSize = 30;
+    const mineCount = 10;
+    let grid = [];
+    let revealed = [];
+    let flagged = [];
+    let mines = [];
+    let gameWon = false;
+    let gameOver = false;
+    let timer = 0;
+    let timerInterval;
+
+    if (!canvas || !ctx) {
+      console.error('Canvas or context not found');
+      alert('无法加载游戏，请检查浏览器支持或刷新页面。');
+    }
+
+    function initGame() {
+      if (!ctx) return;
+      grid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
+      revealed = Array(gridSize).fill().map(() => Array(gridSize).fill(false));
+      flagged = Array(gridSize).fill().map(() => Array(gridSize).fill(false));
+      mines = [];
+      gameWon = false;
+      gameOver = false;
+      timer = 0;
+
+      document.getElementById('mine-count').textContent = `剩余雷数: ${mineCount}`;
+      document.getElementById('timer').textContent = `时间: ${timer}`;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = `时间: ${timer}`;
+      }, 1000);
+
+      let placed = 0;
+      while (placed < mineCount) {
+        const x = Math.floor(Math.random() * gridSize);
+        const y = Math.floor(Math.random() * gridSize);
+        if (!mines.some(m => m.x === x && m.y === y)) {
+          mines.push({ x, y });
+          grid[x][y] = -1;
+          placed++;
+        }
+      }
+
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          if (grid[i][j] === -1) continue;
+          let count = 0;
+          for (let di = -1; di <= 1; di++) {
+            for (let dj = -1; dj <= 1; dj++) {
+              const ni = i + di;
+              const nj = j + dj;
+              if (ni >= 0 && ni < gridSize && nj >= 0 && nj < gridSize && grid[ni][nj] === -1) {
+                count++;
+              }
+            }
+          }
+          grid[i][j] = count;
+        }
+      }
+      drawBoard();
+    }
+
+    function drawBoard() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          ctx.strokeStyle = '#2c3e50';
+          ctx.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize);
+          if (revealed[i][j]) {
+            if (grid[i][j] === -1) {
+              ctx.fillStyle = 'red';
+              ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+              ctx.fillStyle = 'black';
+              ctx.font = '20px Arial';
+              ctx.fillText('💣', i * cellSize + 8, j * cellSize + 22);
+            } else {
+              ctx.fillStyle = '#e0e0e0';
+              ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+              if (grid[i][j] > 0) {
+                ctx.fillStyle = ['#000', '#0000ff', '#008000', '#ff0000', '#000080', '#800000', '#008080', '#000000', '#808080'][grid[i][j]];
+                ctx.font = '20px Arial';
+                ctx.fillText(grid[i][j], i * cellSize + 10, j * cellSize + 22);
+              }
+            }
+          } else if (flagged[i][j]) {
+            ctx.fillStyle = '#c0c0c0';
+            ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText('🚩', i * cellSize + 8, j * cellSize + 22);
+          } else {
+            ctx.fillStyle = '#c0c0c0';
+            ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+    }
+
+    function revealCell(x, y) {
+      if (x < 0 || x >= gridSize || y < 0 || y >= gridSize || revealed[x][y] || flagged[x][y] || gameWon || gameOver) return;
+      revealed[x][y] = true;
+      if (grid[x][y] === -1) {
+        gameOver = true;
+        clearInterval(timerInterval);
+        alert('游戏结束！你踩到雷了！');
+        initGame();
+        return;
+      }
+      if (grid[x][y] === 0) {
+        for (let di = -1; di <= 1; di++) {
+          for (let dj = -1; dj <= 1; dj++) {
+            revealCell(x + di, y + dj);
+          }
+        }
+      }
+      drawBoard();
+      checkWin();
+    }
+
+    function flagCell(x, y) {
+      if (x < 0 || x >= gridSize || y < 0 || y >= gridSize || revealed[x][y] || gameWon || gameOver) return;
+      flagged[x][y] = !flagged[x][y];
+      let flags = 0;
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          if (flagged[i][j]) flags++;
+        }
+      }
+      document.getElementById('mine-count').textContent = `剩余雷数: ${mineCount - flags}`;
+      drawBoard();
+    }
+
+    function checkWin() {
+      let revealedCount = 0;
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          if (revealed[i][j]) revealedCount++;
+        }
+      }
+      if (revealedCount === gridSize * gridSize - mineCount) {
+        gameWon = true;
+        clearInterval(timerInterval);
+        alert(`恭喜！你赢了！用时 ${timer} 秒`);
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('homepage').style.display = 'flex';
+      }
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) / cellSize);
+      const y = Math.floor((e.clientY - rect.top) / cellSize);
+      revealCell(x, y);
+    });
+
+    canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) / cellSize);
+      const y = Math.floor((e.clientY - rect.top) / cellSize);
+      flagCell(x, y);
+    });
+
+    function resetGame() {
+      initGame();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
 </body>
 </html>
